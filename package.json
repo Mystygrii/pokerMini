@@ -2,12 +2,13 @@
   "name": "pokermini",
   "version": "1.0.0",
   "description": "evaluation project",
-  "main": "src/index.js",
+  "main": "src/server.ts",
   "directories": {
     "test": "tests"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node --env-file=.env --watch -r ts-node/register src/server.ts"
   },
   "dependencies": {
     "@picocss/pico": "^2.0.6",
