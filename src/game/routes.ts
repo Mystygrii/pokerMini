@@ -1,6 +1,7 @@
 import { Router } from "express";
-import { showHelloPage } from "./controller";
+import {showGamePage, showHomePage } from "./controller";
 
 export const gameRouter = Router();
 
-gameRouter.get('/', showHelloPage)
+gameRouter.get('/', showHomePage);
+gameRouter.post('/', showGamePage);

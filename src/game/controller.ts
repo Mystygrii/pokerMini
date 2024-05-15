@@ -1,5 +1,9 @@
 import { RequestHandler } from "express";
 
-export const showHelloPage: RequestHandler = (req:any, res:any) => {
+export const showHomePage: RequestHandler = (req, res) => {
     res.render('index');
+}
+
+export const showGamePage: RequestHandler = (req, res) => {
+    res.render('game');
 }
