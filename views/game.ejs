@@ -1,23 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.blue.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.blue.min.css" />
     <title>Document</title>
 </head>
+
 <body>
     <div class="container">
         <div class="grid">
-            <div class="board"></div>
-            <form action="/play" method="post">
-                <input type="text" name="amount">
-                <button type="submit" value="bet">bet</button>
-                <button type="submit" value="check">check</button>
-                <button type="submit" value="call">call</button>
-                <button type="submit" value="fold">fold</button>
-            </form>
+            <% for(key in players){ %>
+                <div class="'test">
+                    <%= players[key].name %>
+                        <p>balance : <%= players[key].balance %>
+                        </p>
+                </div>
+                <%} %>
+                    <div class="board">
+                        <!-- Ajouter ici la div avec les mises des deux joueurs, et la div avec le pot -->
+                    </div>
+                    <form action="/play" method="post">
+                        <input type="number" name="amount">
+                        <button type="submit" name="action" value="bet">bet</button>
+                        <button type="submit" name="action" value="check">check</button>
+                        <button type="submit" name="action" value="call">call</button>
+                        <button type="submit" name="action" value="fold">fold</button>
+                    </form>
         </div>
     </div>
 </body>
+
 </html>

@@ -13,13 +13,13 @@ const players: Array<Player> = [];
 const human: Player = {
   name: "Mystygrii",
   hand: [],
-  jetons: 100,
+  balance: 100,
 };
 
 const bot: Player = {
   name: "bot",
   hand: [],
-  jetons: 100,
+  balance: 100,
 };
 
 players.push(human);

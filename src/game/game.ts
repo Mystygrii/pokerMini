@@ -2,7 +2,7 @@
 export type Player = {
   name: string;
   hand: Array<Card>;
-  jetons: number;
+  balance: number;
 };
 
 //cartes
@@ -12,10 +12,6 @@ export type Card = {
   Family: string;
   value: number;
 };
-//Valeurs et familles des cartes
-const cardValues: Array<string> = ["A", "K", "Q", "J", "10", "9"];
-const cardFamilies: Array<string> = ["Coeur", "Pique"];
-//Fonctions
 
 //Créer les cartes et les ajoutes à la liste
 export function makeDeck(families: Array<string>, ranks: Array<string>) {
@@ -47,16 +43,13 @@ export function makeDeck(families: Array<string>, ranks: Array<string>) {
 }
 
 //mélange du deck
-export function shuffleDeck(deck: Array<Card>) {
-  var temporary: Card;
-  for (const card in deck) {
-    var currentIndex = parseInt(card);
-    var randomIndex = Math.floor(Math.random() * currentIndex);
-    temporary = deck[currentIndex];
-    deck[currentIndex] = deck[randomIndex];
-    deck[randomIndex] = temporary;
+export function shuffleDeck(deck: Card[]): Card[] {
+  const shuffledDeck = [...deck];
+  for (let i = shuffledDeck.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffledDeck[i], shuffledDeck[j]] = [shuffledDeck[j], shuffledDeck[i]];
   }
-  return deck;
+  return shuffledDeck;
 }
 
 //distribue une carte à chaque joueur
@@ -99,4 +92,47 @@ export function checkHand(hand: Array<Card>) {
     }
   }
   return playerHand;
+}
+
+//players actions------------
+
+export function checkAction(player: Player, action: string, amount?: number): number{
+  var balance = player.balance;
+
+  switch (action) {
+    case 'bet':
+      if(amount){
+        if(amount > 2){
+          balance -= 2;
+        }
+        else{
+          balance -= amount;
+        }
+      }
+      return balance;
+
+      case 'raise':
+        if(amount){
+          if(amount > 2){
+            balance -= 2;
+          }
+          else{
+            balance -= amount;
+          }
+        }
+        return balance;
+
+    case 'check':
+      return balance;
+
+    case 'call':
+        return balance;
+
+      case 'fold':
+        return balance;
+  
+    default:
+      return balance;
+  }
+
 }

@@ -1,8 +1,8 @@
 import { Router } from "express";
-import {showGamePage, showHomePage, test } from "./controller";
+import {getAction, showGamePage, gameInit } from "./controller";
 
 export const gameRouter = Router();
 
-gameRouter.get('/', showHomePage);
+gameRouter.get('/', gameInit);
 gameRouter.get('/game', showGamePage);
-gameRouter.post('/play',test);
+gameRouter.post('/play',getAction);
