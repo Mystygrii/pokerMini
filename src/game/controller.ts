@@ -7,3 +7,8 @@ export const showHomePage: RequestHandler = (req, res) => {
 export const showGamePage: RequestHandler = (req, res) => {
     res.render('game');
 }
+
+export const test: RequestHandler = (req, res) => {
+    res.redirect('game');
+    console.log(req.body);
+}
