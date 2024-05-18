@@ -6,12 +6,14 @@ const human: Player = {
   name: "Mystygrii",
   hand: [],
   balance: 100,
+  hasPlayed: false
 };
 
 const bot: Player = {
   name: "bot",
   hand: [],
   balance: 100,
+  hasPlayed: false
 };
 
 players.push(human);

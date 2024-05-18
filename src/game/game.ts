@@ -54,12 +54,10 @@ export function shuffleDeck(deck: Card[]): Card[] {
 }
 
 //distribue une carte à chaque joueur
-export function dealCards(player: Player, deck: Array<Card>) {
-  if (deck.length > 0) {
-    var card = deck[-1];
-    player.hand.push(card);
-    deck.splice(-1, 1);
-  }
+export function dealCards(deck: Array<Card>) :Card{
+  var card = deck[0];
+  deck.splice(0,1);
+  return card;
 }
 
 //Vérifie la combinaison dans la main du joueur

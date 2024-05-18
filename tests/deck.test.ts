@@ -14,12 +14,14 @@ const human: Player = {
   name: "Mystygrii",
   hand: [],
   balance: 100,
+  hasPlayed: false
 };
 
 const bot: Player = {
   name: "bot",
   hand: [],
   balance: 100,
+  hasPlayed: false
 };
 
 players.push(human);
@@ -59,7 +61,7 @@ describe("A test to check all the pokerMini functions", () => {
   it("must deal a card to each players", () => {
     const deck = shuffleDeck(exampleDeck);
     for (const player in players) {
-      dealCards(players[player], deck);
+      players[player].hand.push(dealCards(deck));
       expect(players[player].hand.length).toBeGreaterThan(0);
     }
   });

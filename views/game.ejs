@@ -11,23 +11,69 @@
 <body>
     <div class="container">
         <div class="grid">
-            <% for(key in players){ %>
-                <div class="'test">
-                    <%= players[key].name %>
-                        <p>balance : <%= players[key].balance %>
-                        </p>
-                </div>
-                <%} %>
-                    <div class="board">
-                        <!-- Ajouter ici la div avec les mises des deux joueurs, et la div avec le pot -->
+            <% if(currentPlayer.name==='human' ) {%>
+                <% for(key in players){ %>
+                    <div class="'test">
+                        <%= players[key].name %>
+                            <p>balance : <%= players[key].balance %>
+                            </p>
                     </div>
-                    <form action="/play" method="post">
-                        <input type="number" name="amount">
-                        <button type="submit" name="action" value="bet">bet</button>
-                        <button type="submit" name="action" value="check">check</button>
-                        <button type="submit" name="action" value="call">call</button>
-                        <button type="submit" name="action" value="fold">fold</button>
-                    </form>
+                    <%} %>
+                        <div class="board">
+                            <p>current turn : <%= currentTurn %>
+                            </p>
+                            <!-- Ajouter ici la div avec les mises des deux joueurs, et la div avec le pot -->
+                        </div>
+                        <%if(currentTurn === 'blind'){ %>
+                        <form action="/play" method="post">
+                            <input type="number" name="amount">
+                            <button type="submit" name="action" value="bet">bet</button>
+                            <button type="submit" name="action" value="raise" disabled="True">raise</button>
+                            <button type="submit" name="action" value="call" disabled="True">call</button>
+                            <button type="submit" name="action" value="check">check</button>
+                            <button type="submit" name="action" value="fold">fold</button>
+                        </form>
+                        <%}else if(currentTurn === 'ante'){%>
+                            <form action="/play" method="post">
+                                <input type="number" name="amount">
+                                <button type="submit" name="action" value="bet">bet</button>
+                                <button type="submit" name="action" value="raise">raise</button>
+                                <button type="submit" name="action" value="call">call</button>
+                                <button type="submit" name="action" value="check">check</button>
+                                <button type="submit" name="action" value="fold">fold</button>
+                        <%}else if(currentTurn === 'showDown'){%>
+                            <%    players.forEach((p)=>{ %>
+                                hand : <%= p.name %> <br>
+                                <%= p.hand[0].rank %>
+                                <%= p.hand[0].Family %>
+                                <%= p.hand[1].rank %>
+                                <%= p.hand[1].Family %>
+                                <%= p.hand[2].rank %>
+                                <%= p.hand[2].Family %>
+                                <br>
+                                <br>
+                            <%    }) %>
+
+                            <%}%>
+
+                        <%}else{%>
+                            <div>
+                                <p>waiting for bot</p>
+                                <script>
+                                    <!-- on regarde si le joueur change, et on rafraîchit la page -->
+                                    const id = setInterval(() => {
+                                        fetch("/current-player")
+                                            .then(res => res.json())
+                                            .then(player => {
+                                                if (player.name === "human") {
+                                                    clearInterval(id)
+                                                    location.reload()
+                                                }
+                                            })
+                                    }, 500)
+                                </script>
+                            </div>
+                            <%}%>
         </div>
     </div>
 </body>
