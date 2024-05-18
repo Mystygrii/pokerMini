@@ -2,16 +2,15 @@ import express from "express";
 import { gameRouter } from "../src/game/routes";
 
 const createApp = () => {
-    
-    const app = express();
-    
-    app.set("views", "./views");
-    app.set("view engine", "ejs");
-    app.use(express.static("public"));
-    app.use(express.urlencoded({extended:true}));
-    app.use('/',gameRouter);
+  const app = express();
 
-    return app;
-}
+  app.set("views", "./views");
+  app.set("view engine", "ejs");
+  app.use(express.static("public"));
+  app.use(express.urlencoded({ extended: true }));
+  app.use("/", gameRouter);
 
-export { createApp }
+  return app;
+};
+
+export { createApp };

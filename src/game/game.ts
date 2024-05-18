@@ -3,6 +3,7 @@ export type Player = {
   name: string;
   hand: Array<Card>;
   balance: number;
+  hasPlayed : boolean;
 };
 
 //cartes
