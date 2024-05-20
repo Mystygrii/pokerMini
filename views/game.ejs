@@ -13,28 +13,38 @@
         <div class="grid">
             <% if(currentPlayer.name==='human' ) {%>
                 <% for(key in players){ %>
-                    <div class="'test">
+                    <div class="'players">
                         <%= players[key].name %>
                             <p>balance : <%= players[key].balance %>
+                            <p>bets : <%= players[key].bets %>
                             </p>
                     </div>
                     <%} %>
-                        <div class="board">
-                            <p>current turn : <%= currentTurn %>
-                            </p>
-                            <!-- Ajouter ici la div avec les mises des deux joueurs, et la div avec le pot -->
-                        </div>
                         <%if(currentTurn === 'blind'){ %>
-                        <form action="/play" method="post">
-                            <input type="number" name="amount">
-                            <button type="submit" name="action" value="bet">bet</button>
-                            <button type="submit" name="action" value="raise" disabled="True">raise</button>
-                            <button type="submit" name="action" value="call" disabled="True">call</button>
-                            <button type="submit" name="action" value="check">check</button>
-                            <button type="submit" name="action" value="fold">fold</button>
+                            <form action="/play" method="post">
+                            <div class="board">
+                                <p>current turn : <%= currentTurn %>
+                                </p>
+                                pot : <%= pot %>
+                            </div>
+                                <input type="number" name="amount">
+                                <button type="submit" name="action" value="bet">bet</button>
+                                <button type="submit" name="action" value="raise" disabled="True">raise</button>
+                                <button type="submit" name="action" value="call">call</button>
+                                <button type="submit" name="action" value="check">check</button>
+                                <button type="submit" name="action" value="fold" disabled="True">fold</button>
                         </form>
                         <%}else if(currentTurn === 'ante'){%>
                             <form action="/play" method="post">
+                                <div class="board">
+                                    <p>current turn : <%= currentTurn %>
+                                    </p>
+                                    pot : <%= pot %> <br>
+                                    <%= players[1].hand[0].rank %>
+                                    <%= players[1].hand[0].Family %> <br>
+                                    <%= players[1].hand[1].rank %>
+                                    <%= players[1].hand[1].Family %> <br>
+                                </div>
                                 <input type="number" name="amount">
                                 <button type="submit" name="action" value="bet">bet</button>
                                 <button type="submit" name="action" value="raise">raise</button>
@@ -42,19 +52,31 @@
                                 <button type="submit" name="action" value="check">check</button>
                                 <button type="submit" name="action" value="fold">fold</button>
                         <%}else if(currentTurn === 'showDown'){%>
-                            <%    players.forEach((p)=>{ %>
-                                hand : <%= p.name %> <br>
-                                <%= p.hand[0].rank %>
-                                <%= p.hand[0].Family %>
-                                <%= p.hand[1].rank %>
-                                <%= p.hand[1].Family %>
-                                <%= p.hand[2].rank %>
-                                <%= p.hand[2].Family %>
-                                <br>
-                                <br>
-                            <%    }) %>
+                            <div class="board">
+                                <p>current turn : <%= currentTurn %></p>
+                                pot : <%= pot %> <br>
+                                <%    players.forEach((p)=>{ %>
+                                    hand : <%= p.name %> <br>
+                                    <%= p.hand[0].rank %>
+                                    <%= p.hand[0].Family %> <br>
+                                    <%= p.hand[1].rank %>
+                                    <%= p.hand[1].Family %> <br>
+                                    <%= p.hand[2].rank %>
+                                    <%= p.hand[2].Family %> <br>
+                                    <%= p.handCategory.name %>
+                                    <br>
+                                    <br>
+                                    <%    }) %>
+                                </div>
+                                
+                                <form action="/play" method="post">
+                                    winner : <%= winner %>
+                                    <button type="submit" name="action" value="next turn">tour suivant</button>
+                                </form>
 
-                            <%}%>
+                            <%}else if(currentTurn === 'end'){%>
+                                fin de la partie
+                                <%}%>
 
                         <%}else{%>
                             <div>

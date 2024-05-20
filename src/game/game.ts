@@ -3,6 +3,8 @@ export type Player = {
   name: string;
   hand: Array<Card>;
   balance: number;
+  bets ?:number;
+  handCategory :handsCat;
   hasPlayed : boolean;
 };
 
@@ -13,6 +15,15 @@ export type Card = {
   Family: string;
   value: number;
 };
+
+//Types de mains
+export type handsCat = {
+  name :string;
+  value :number;
+}
+
+// const hands: string[] = ['Suite Flush', 'Suite', 'Flush', 'Pair', 'Carte Haute'];
+const hands: handsCat[] = [{name : 'Suite Flush', value: 5},{name : 'Suite', value: 4},{name : 'Flush', value: 3},{name : 'Pair', value: 2},{name : 'Carte Haute', value: 1}];
 
 //Créer les cartes et les ajoutes à la liste
 export function makeDeck(families: Array<string>, ranks: Array<string>) {
@@ -63,31 +74,33 @@ export function dealCards(deck: Array<Card>) :Card{
 //Vérifie la combinaison dans la main du joueur
 export function checkHand(hand: Array<Card>) {
   hand.sort((a, b) => a.value - b.value);
-  console.log(hand);
-  var playerHand = "";
+  var playerHand :handsCat = hands[0];
 
   //On regarde la main du joueur et on vérifie quelle est sa combinaison de cartes
   for (var i = 0; i < hand.length - 1; i++) {
 
     //Les 3 cartes se suivent et sont de la même famille
     if ((hand[i + 1].value === hand[i].value + 1 && hand[0].value === hand[i].value-1) && (hand[i].Family === hand[i+1].Family && hand[i].Family === hand[0].Family)) {
-      playerHand = "Suite Flush";
+      playerHand = hands[0];
 
       //Les 3 cartes se suivent
     }else if(hand[i + 1].value === hand[i].value + 1 && hand[0].value === hand[i].value-1){
-      playerHand = "Suite";
+      playerHand = hands[1];
+
 
       //Les 3 cartes sont de la même famille
     }else if(hand[i].Family === hand[i+1].Family && hand[i].Family === hand[0].Family){
-      playerHand = "Flush";
+      playerHand = hands[2];
+
 
       //2 cartes ont la même valeur
     }else if(hand[i + 1].rank === hand[i].rank || hand[0].rank === hand[i].rank ){
-      playerHand = "Pair";
+      playerHand = hands[3];
+
     
       //Aucun des cas précédents
     }else{
-      playerHand = "Carte Haute";
+      playerHand = hands[4];
     }
   }
   return playerHand;
@@ -101,7 +114,7 @@ export function checkAction(player: Player, action: string, amount?: number): nu
   switch (action) {
     case 'bet':
       if(amount){
-        if(amount > 2){
+        if(amount > 2 || amount <=0 || amount === undefined){
           balance -= 2;
         }
         else{
@@ -112,7 +125,7 @@ export function checkAction(player: Player, action: string, amount?: number): nu
 
       case 'raise':
         if(amount){
-          if(amount > 2){
+          if(amount > 2 || amount <=0 || amount === undefined){
             balance -= 2;
           }
           else{
@@ -134,4 +147,20 @@ export function checkAction(player: Player, action: string, amount?: number): nu
       return balance;
   }
 
+}
+
+export function getWinner(players :Player[]) :string{
+  var winner :string = '';
+
+  if(players[0].handCategory.value > players[1].handCategory.value){
+    winner = players[0].name;
+
+  }else if(players[1].handCategory.value > players[0].handCategory.value){
+    winner = players[1].name;
+  
+  }else{
+    winner = 'none';
+  }
+
+  return winner;
 }
