@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { Player, checkHand } from "../src/game/game";
+import { Player, checkHand, getWinner,handsCat } from "../src/game/game";
 
 const players: Array<Player> = [];
 const human: Player = {
@@ -67,3 +67,23 @@ describe('Testing the handCheck funtion', ()=>{
         expect(checkHand(human.hand)).toStrictEqual({name:"Carte Haute", value:1});
     });
   })
+
+describe('It must compare the winners', ()=>{
+  it('must be human', ()=>{
+    players[0].handCategory = {name:'Suite Flush', value:5}
+    players[1].handCategory = {name:'Carte Haute', value:1}
+    expect (getWinner(players)).toBe(human.name)
+  });
+
+  it('must be bot', ()=> {
+    players[0].handCategory = {name:'Pair', value:2}
+    players[1].handCategory = {name:'Flush', value:3}
+    expect (getWinner(players)).toBe(bot.name);
+  });
+
+  it('must be none', ()=> { 
+      players[0].handCategory = {name:'Suite', value:4}
+      players[1].handCategory = {name:'Suite', value:4}
+    expect (getWinner(players)).toBe('none')
+  });
+}) 

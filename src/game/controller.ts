@@ -1,12 +1,10 @@
 import { RequestHandler } from "express";
-import { Player, checkAction, checkHand, dealCards, getWinner, handsCat, makeDeck, shuffleDeck } from "./game";
+import { Game, Player, checkAction, checkHand, dealCard, getWinner, handsCat, makeDeck } from "./game";
 
-//la constante cardValues, et cardFamilies permettent d'ajouter des nouvelles cartes et familles si l'on décide de modifie les règles,
-//Sans altérer le bon fonctionnement du reste du code
 //constantes du jeu
 const cardValues: string[] = ["A", "K", "Q", "J", "10", "9"];
 const cardFamilies: string[] = ["Coeur", "Pique"];
-const actions: string[] = ["bet", "raise", "check", "call", "fold"];
+const actions: string[] = ["bet", "raise", "call", "check", "fold"];
 const initialBalance = 100;
 const turns: string[] = ['blind', 'ante', 'showDown', 'end'];
 const hands: handsCat[] = [{ name: 'Suite Flush', value: 5 }, { name: 'Suite', value: 4 }, { name: 'Flush', value: 3 }, { name: 'Pair', value: 2 }, { name: 'Carte Haute', value: 1 }];
@@ -15,18 +13,14 @@ const hands: handsCat[] = [{ name: 'Suite Flush', value: 5 }, { name: 'Suite', v
 var playersNames: string[] = ["bot", "human"];
 var players: Player[] = [];
 var deck = makeDeck(cardFamilies, cardValues);
-var currentTurn: string;
 var isTurnFinished: boolean;
-var humanBets: number;
-var botBets: number;
 var pot: number;
 var winner: string;
-
-var currentPlayer: Player;
+var game: Game;
 
 //Initialisation des éléments du jeu
 export const gameInit: RequestHandler = (req, res) => {
-  deck = shuffleDeck(deck);
+  deck = makeDeck(cardFamilies,cardValues);
 
   players = [];
 
@@ -34,104 +28,74 @@ export const gameInit: RequestHandler = (req, res) => {
     var player: Player = {
       name: playersNames[name],
       hand: [],
-      balance: 100,
-      hasPlayed: false,
+      balance: initialBalance,
       handCategory: hands[4],
-      bets: 0
+      bets: 0,
+      hasPlayed: false,
+      lastAction: '',
     };
     players.push(player);
   }
+  
+  game = {
+    currentTurn: turns[0],
+    currentPlayer: players[0],
+    lastPlayer: players[0],
+    pot: 0,
+    winner: players[0],
+    isTurnFinished: false
+  }
 
-  players.forEach((player) => {
-    player.hand = [];
-    player.balance = initialBalance;
-    player.bets = 0;
-  });
-  currentTurn = turns[0];
-  currentPlayer = players[1];
-  isTurnFinished = false;
-  humanBets = 0;
-  botBets = 0;
-  pot = 0;
-  players.forEach((player) => {
-    player.hasPlayed = false;
-  });
-
-  currentTurn = turns[0];
   res.render("index");
 };
 
 //Affichage initial de la page du jeu
 export const showGamePage: RequestHandler = (req, res) => {
 
-
-  players.forEach((player) => {
-    if (player.hasPlayed) {
-      pot += Number(player.bets);
-      isTurnFinished = true;
-    } else {
-      isTurnFinished = false;
+  for(var player in players){
+    if(players[player].hasPlayed && (players[player].lastAction !== actions[0] || players[player].lastAction !== actions[1])){
+      game.isTurnFinished = true
     }
-  })
+  }
 
-  if (isTurnFinished && currentTurn === 'blind') {
-    players.forEach((player) => {
-      for (let i = 0; i < 2; i++) {
-        player.hand.push(dealCards(deck));
+  if (game.isTurnFinished && game.currentTurn === 'blind') {
+    players.forEach((player)=>{
+      for(let i = 0; i < 2; i++){
+        player.hand.push(dealCard(deck));
       }
-      player.hasPlayed = false;
+    })
+    game.currentTurn = turns[2];
+  } else if (game.currentTurn === 'ante') {
+    players.forEach((player)=>{
+      player.hand.push(dealCard(deck));
     });
-    currentTurn = turns[1];
+    game.currentTurn = turns[2];
 
-  } else if (isTurnFinished && currentTurn === 'ante') {
-    players.forEach((player) => {
-      player.hand.push(dealCards(deck));
-      player.handCategory = checkHand(player.hand);
-      player.hasPlayed = false;
-    });
+  } else if (game.currentTurn === 'showDown') {
 
-    winner = getWinner(players);
-    currentTurn = turns[2];
-
-  } else if (isTurnFinished && currentTurn === 'showDown') {
-    players.forEach((player) => {
-      player.hand.splice(0, player.hand.length);
-      player.bets = 0;
-      if (player.name === winner) {
-        player.balance += Number(pot);
-      }
-    });
-
-    if (currentPlayer === players[0]) {
-      currentPlayer = players[1]
-    } else {
-      currentPlayer = players[0]
-    }
-    pot = 0;
-    currentTurn = turns[0];
-    deck = shuffleDeck(makeDeck(cardFamilies, cardValues));
   }
 
   //Le tour du bot
-  if (currentPlayer === players[0]) {
+  if (game.currentPlayer === players[0]) {
     setTimeout(() => {
       var amount = 2
-      currentPlayer.balance -= amount;
-      currentPlayer.bets = amount;
-      currentPlayer = players[1];
+      game.currentPlayer.balance -= amount;
+      game.currentPlayer.bets = amount;
+      game.currentPlayer.lastAction = 'bet';
+      game.lastPlayer = game.currentPlayer
+      game.currentPlayer = players[1];
     }, 1000)
 
   }
 
-  currentPlayer.hasPlayed = true
-  res.render("game", { players, currentTurn, currentPlayer, pot, winner });
+  res.render("game", { players, game, winner });
 };
 
 //On regarde quelle action le joueur effectue, si le joueur mise ou relance, on réduit ses jetons et on actualise la page du jeu
 //Si le joueur attend ou passe, on actualise la page
 export const getAction: RequestHandler = (req, res) => {
   var action = req.body.action;
-  var player = currentPlayer;
+  var player = game.currentPlayer;
 
   //Si le joueur mise ou relance
   if (player.name === 'human') {
@@ -151,23 +115,24 @@ export const getAction: RequestHandler = (req, res) => {
       //Si le joueur se couche
     } else if (action === actions[4]) {
       //toDo
-      currentPlayer = players[0];
-      currentTurn = turns[0];
+      game.currentPlayer = players[0];
+      game.currentTurn = turns[0];
     }
 
     if (action === 'next turn') {
-      currentPlayer = players[0];
-      currentTurn === turns[0];
+      game.currentPlayer = players[0];
+      game.currentTurn === turns[0];
     }
     //Si le joueur actuel est l'humain, c'est le tour du bot
-    if (currentPlayer === players[1]) {
-      currentPlayer = players[0];
+    if (game.currentPlayer === players[1]) {
+      game.currentPlayer = players[0];
     }
 
   }
+  player.lastAction = action;
   res.redirect('game');
 };
 
 export const getCurrentPlayer: RequestHandler = (req, res) => {
-  res.json(currentPlayer);
+  res.json(game.currentPlayer);
 }

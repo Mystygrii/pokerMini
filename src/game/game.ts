@@ -4,9 +4,20 @@ export type Player = {
   hand: Array<Card>;
   balance: number;
   bets ?:number;
-  handCategory :handsCat;
   hasPlayed : boolean;
+  handCategory :handsCat;
+  lastAction :string;
 };
+
+//Partie
+export type Game = {
+  currentTurn :string;
+  currentPlayer :Player;
+  lastPlayer :Player;
+  pot :Number;
+  winner :Player;
+  isTurnFinished :boolean;
+}
 
 //cartes
 export type Card = {
@@ -22,10 +33,9 @@ export type handsCat = {
   value :number;
 }
 
-// const hands: string[] = ['Suite Flush', 'Suite', 'Flush', 'Pair', 'Carte Haute'];
 const hands: handsCat[] = [{name : 'Suite Flush', value: 5},{name : 'Suite', value: 4},{name : 'Flush', value: 3},{name : 'Pair', value: 2},{name : 'Carte Haute', value: 1}];
 
-//Créer les cartes et les ajoutes à la liste
+//Créer les cartes et les ajoutes au deck, puis mélange du deck
 export function makeDeck(families: Array<string>, ranks: Array<string>) {
   var deck: Array<Card> = [];
 
@@ -51,11 +61,7 @@ export function makeDeck(families: Array<string>, ranks: Array<string>) {
       deck.push(card);
     }
   }
-  return deck;
-}
 
-//mélange du deck
-export function shuffleDeck(deck: Card[]): Card[] {
   const shuffledDeck = [...deck];
   for (let i = shuffledDeck.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -65,7 +71,7 @@ export function shuffleDeck(deck: Card[]): Card[] {
 }
 
 //distribue une carte à chaque joueur
-export function dealCards(deck: Array<Card>) :Card{
+export function dealCard(deck: Array<Card>) :Card{
   var card = deck[0];
   deck.splice(0,1);
   return card;
@@ -149,17 +155,15 @@ export function checkAction(player: Player, action: string, amount?: number): nu
 
 }
 
-export function getWinner(players :Player[]) :string{
-  var winner :string = '';
+export function getWinner(players :Player[]) :Player{
+  var winner :Player = players[0];
 
   if(players[0].handCategory.value > players[1].handCategory.value){
-    winner = players[0].name;
+    winner = players[0];
 
   }else if(players[1].handCategory.value > players[0].handCategory.value){
-    winner = players[1].name;
+    winner = players[1];
   
-  }else{
-    winner = 'none';
   }
 
   return winner;
