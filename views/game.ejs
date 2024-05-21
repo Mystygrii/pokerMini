@@ -39,7 +39,7 @@
                                 <div class="board">
                                     <p>current turn : <%= game.currentTurn %>
                                     </p>
-                                    pot : <%= pot %> <br>
+                                    pot : <%= game.pot %> <br>
                                     <%= players[1].hand[0].rank %>
                                     <%= players[1].hand[0].Family %> <br>
                                     <%= players[1].hand[1].rank %>
@@ -54,7 +54,7 @@
                         <%}else if(game.currentTurn === 'showDown'){%>
                             <div class="board">
                                 <p>current turn : <%= game.currentTurn %></p>
-                                pot : <%= pot %> <br>
+                                pot : <%= game.pot %> <br>
                                 <%    players.forEach((p)=>{ %>
                                     hand : <%= p.name %> <br>
                                     <%= p.hand[0].rank %>
@@ -70,7 +70,7 @@
                                 </div>
                                 
                                 <form action="/play" method="post">
-                                    winner : <%= winner %>
+                                    winner : <%= game.winner.name %>
                                     <button type="submit" name="action" value="next turn">tour suivant</button>
                                 </form>
 

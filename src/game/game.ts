@@ -3,7 +3,7 @@ export type Player = {
   name: string;
   hand: Array<Card>;
   balance: number;
-  bets ?:number;
+  bets :number;
   hasPlayed : boolean;
   handCategory :handsCat;
   lastAction :string;
@@ -14,8 +14,8 @@ export type Game = {
   currentTurn :string;
   currentPlayer :Player;
   lastPlayer :Player;
-  pot :Number;
-  winner :Player;
+  pot :number;
+  winner ?:Player;
   isTurnFinished :boolean;
 }
 

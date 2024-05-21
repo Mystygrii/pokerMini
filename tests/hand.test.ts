@@ -7,6 +7,7 @@ const human: Player = {
   hand: [],
   balance: 100,
   handCategory : {name:'Carte Haute', value:1},
+  hasPlayed: false,
   lastAction : ''
 };
 
@@ -15,6 +16,7 @@ const bot: Player = {
   hand: [],
   balance: 100,
   handCategory : {name:'Carte Haute', value:1},
+  hasPlayed: false,
   lastAction : ''
 };
 

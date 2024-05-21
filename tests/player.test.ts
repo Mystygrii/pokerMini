@@ -6,6 +6,7 @@ const player: Player = {
   hand: [],
   balance: 100,
   handCategory: {name:'Carte Haute', value:1},
+  hasPlayed: false,
   lastAction:''
 };
 
