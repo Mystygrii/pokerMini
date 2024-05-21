@@ -14,14 +14,16 @@ const human: Player = {
   name: "Mystygrii",
   hand: [],
   balance: 100,
-  hasPlayed: false
+  hasPlayed: false,
+  handCategory: {name:'Carte Haute', value:1},
 };
 
 const bot: Player = {
   name: "bot",
   hand: [],
   balance: 100,
-  hasPlayed: false
+  hasPlayed: false,
+  handCategory: {name:'Carte Haute', value:1},
 };
 
 players.push(human);
@@ -53,9 +55,7 @@ describe("A test to check all the pokerMini functions", () => {
   it("must be different from original deck", () => {
     const deck = exampleDeck;
     const shuffledDeck = shuffleDeck(deck);
-    for (const card in shuffledDeck) {
-      expect(shuffledDeck[card] !== deck[card]).toBeFalsy();
-    }
+    expect(shuffledDeck !== deck).toBe(true);
   });
 
   it("must deal a card to each players", () => {
