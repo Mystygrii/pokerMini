@@ -5,8 +5,8 @@ const player: Player = {
   name: "Mystygrii",
   hand: [],
   balance: 100,
-  hasPlayed:false,
-  handCategory: {name:'Carte Haute', value:1}
+  handCategory: {name:'Carte Haute', value:1},
+  lastAction:''
 };
 
 describe("Testing the bet action", () => {

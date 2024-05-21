@@ -6,16 +6,16 @@ const human: Player = {
   name: "Mystygrii",
   hand: [],
   balance: 100,
-  hasPlayed: false,
-  handCategory : {name:'Carte Haute', value:1}
+  handCategory : {name:'Carte Haute', value:1},
+  lastAction : ''
 };
 
 const bot: Player = {
   name: "bot",
   hand: [],
   balance: 100,
-  hasPlayed: false,
-  handCategory : {name:'Carte Haute', value:1}
+  handCategory : {name:'Carte Haute', value:1},
+  lastAction : ''
 };
 
 players.push(human);
